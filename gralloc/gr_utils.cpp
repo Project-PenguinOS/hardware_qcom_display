@@ -1721,6 +1721,12 @@ int GetImplDefinedFormat(uint64_t usage, int format) {
       }
     } else if (usage & BufferUsage::CAMERA_INPUT) {
       if (usage & BufferUsage::CAMERA_OUTPUT) {
+#ifdef GRALLOC_CAMERA_YUV_420_888_NV12
+        // Some vendor camera stacks read flexible YUV camera buffers as UV
+        if (format == static_cast<int>(PixelFormat::YCBCR_420_888)) {
+          gr_format = HAL_PIXEL_FORMAT_YCbCr_420_SP_VENUS;  // NV12
+        } else
+#endif
         // Assumed ZSL if both producer and consumer camera flags set
         gr_format = HAL_PIXEL_FORMAT_NV21_ZSL;  // NV21
       } else {
@@ -1731,7 +1737,12 @@ int GetImplDefinedFormat(uint64_t usage, int format) {
         if ((usage & BufferUsage::PROTECTED) && (!CanAllocateZSLForSecureCamera())) {
           gr_format = static_cast<int>(PixelFormat::YCRCB_420_SP);  // NV21
         } else {
+#ifdef GRALLOC_CAMERA_YUV_420_888_NV12
+          // Some vendor camera stacks read flexible YUV camera buffers as UV
+          gr_format = HAL_PIXEL_FORMAT_YCbCr_420_SP_VENUS;  // NV12
+#else
           gr_format = HAL_PIXEL_FORMAT_NV21_ZSL;  // NV21
+#endif
         }
       } else {
         gr_format = HAL_PIXEL_FORMAT_YCbCr_420_SP_VENUS;  // NV12 preview
