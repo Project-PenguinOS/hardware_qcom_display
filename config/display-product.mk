@@ -162,8 +162,9 @@ endif
 # Soong Namespace
 SOONG_CONFIG_NAMESPACES += qtidisplay
 
+# Preserve device-provided keys registered before this product makefile.
 # Soong Keys
-SOONG_CONFIG_qtidisplay := drmpp headless llvmsa \
+SOONG_CONFIG_qtidisplay += drmpp headless llvmsa \
                            gralloc4 displayconfig_enabled \
                            default var1 var2 var3 llvmcov  \
                            composer_version smmu_proxy \
